@@ -20,7 +20,6 @@ public class MainActivity extends AppCompatActivity {
     int intentos2;
     String palabra;
     EditText letra;
-    boolean[] finPartida;
     char[] nuevaPalabra;
     ArrayList<Character> caracteresRepetidos;
 
@@ -28,13 +27,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        iniciarPartida();
     }
 
-    public void jugar(View view) {
-        if (caracteresRepetidos != null) {
-            caracteresRepetidos.clear();
-        }
-
+    public void iniciarPartida() {
         intentos = (TextView) findViewById(R.id.intentos);
         intentos.setText("5");
         intentos2 = Integer.parseInt(intentos.getText().toString());
@@ -48,52 +44,57 @@ public class MainActivity extends AppCompatActivity {
 
         palabraPorDefecto = (TextView) findViewById(R.id.palabra);
         nuevaPalabra = new char[palabra.length()];
-        finPartida = new boolean[palabra.length()];
         for (int i = 0; i < palabra.length(); i++) {
             nuevaPalabra[i] = '_';
         }
 
         palabraPorDefecto.setText(String.valueOf(nuevaPalabra));
+    }
+
+    public void jugar(View view) {
+
+        iniciarPartida();
 
 
     }
 
     public void adivinar(View view) {
         try {
-            
-       
-        if (palabra == null) {
-            Toast.makeText(this, "Debes de comenzar el juego!!", Toast.LENGTH_LONG).show();
-        } else {
-            letra = (EditText) findViewById(R.id.letra);
-            char letraIntroducida = letra.getText().charAt(0);
 
 
-            if (intentos2 >= 0) {
-                if(letraHallada(letraIntroducida)){
+            if (palabra == null) {
+                Toast.makeText(this, "Debes de comenzar el juego!!", Toast.LENGTH_LONG).show();
+            } else {
+                letra = (EditText) findViewById(R.id.letra);
+                char letraIntroducida = letra.getText().charAt(0);
 
-                }else{
-                    intentos2--;
+
+                if (intentos2 > 1) {
+                    if (letraHallada(letraIntroducida)) {
+
+                    } else {
+                        intentos2--;
+                    }
+
+                    palabraPorDefecto.setText(String.valueOf(nuevaPalabra));
+                } else {
+                    volverJugar(view, false);
+
                 }
 
-                palabraPorDefecto.setText(String.valueOf(nuevaPalabra));
-            } else {
-                volverJugar(view, false);
+                intentos.setText(String.valueOf(intentos2));
+                if (comprobarFinal()) {
 
+                    volverJugar(view, true);
+                }
             }
-
-            intentos.setText(String.valueOf(intentos2));
-            if (comprobarFinal()) {
-
-                volverJugar(view, true);
-            }
-        }
-        ((EditText) findViewById(R.id.letra)).setText("");
-        }catch (IndexOutOfBoundsException iobe){
+            ((EditText) findViewById(R.id.letra)).setText("");
+        } catch (IndexOutOfBoundsException iobe) {
             Toast.makeText(this, "Introduce una letra!", Toast.LENGTH_SHORT).show();
         }
     }
 
+    //Si la letra introducida se encuentra en la palabra, cambia la máscara de guiones por la letra en su posicion
     public boolean letraHallada(char letraIntroducida) {
         boolean letrahallada = false;
         char[] letra1 = palabra.toCharArray();
@@ -101,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < letra1.length; i++) {
             if (palabra.charAt(i) == letraIntroducida) {
                 nuevaPalabra[i] = letraIntroducida;
-               letrahallada=true;
+                letrahallada = true;
             }
 
         }
