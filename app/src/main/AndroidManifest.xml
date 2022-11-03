@@ -14,7 +14,7 @@
         android:theme="@style/Theme.AdivinandoPalabras"
         tools:targetApi="31">
         <activity
-            android:name=".PartidaActivity"
+            android:name=".Partida"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
